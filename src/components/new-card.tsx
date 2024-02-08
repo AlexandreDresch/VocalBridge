@@ -7,13 +7,16 @@ import {
   Trigger,
 } from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useContext, useState } from "react";
 import { toast } from "sonner";
+import { NotesContext } from "../providers/notes-context";
 
 export default function NewCard() {
   const [shouldShowOnboarding, setShouldShowOnboarding] =
     useState<boolean>(true);
   const [content, setContent] = useState<string>("");
+
+  const { addNote } = useContext(NotesContext);
 
   function handleStartEditor() {
     setShouldShowOnboarding(false);
@@ -27,9 +30,17 @@ export default function NewCard() {
   function handleSaveNote(e: FormEvent) {
     e.preventDefault();
 
-    toast.success("Note saved successfully!");
+    const note = {
+      id: crypto.randomUUID(),
+      date: new Date(),
+      content,
+    };
 
-    console.log(content);
+    addNote(note);
+
+    setShouldShowOnboarding(true);
+
+    toast.success("Note saved successfully!");
   }
 
   return (
