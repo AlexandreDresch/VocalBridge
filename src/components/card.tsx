@@ -31,7 +31,7 @@ export default function Card({ note }: CardProps) {
 
   return (
     <Root>
-      <Trigger className="rounded-sm text-left bg-slate-700 p-5 space-y-3 overflow-hidden relative outline-none hover:ring-1 hover:ring-slate-600 transition-transform hover:scale-105 focus-visible:ring-1 focus-visible:ring-slate-500 focus-visible:scale-105">
+      <Trigger className="rounded-sm flex flex-col text-left bg-slate-700 p-5 space-y-3 overflow-hidden relative outline-none hover:ring-1 hover:ring-slate-600 transition-transform hover:scale-105 focus-visible:ring-1 focus-visible:ring-slate-500 focus-visible:scale-105">
         <span className="text-sm font-medium text-slate-200">
           {formatDistanceToNow(note.date, { addSuffix: true })}
         </span>
