@@ -11,15 +11,64 @@ import { ChangeEvent, FormEvent, useContext, useState } from "react";
 import { toast } from "sonner";
 import { NotesContext } from "../providers/notes-context";
 
+let speechRecognition: SpeechRecognition | null = null;
+
 export default function NewCard() {
   const [shouldShowOnboarding, setShouldShowOnboarding] =
     useState<boolean>(true);
   const [content, setContent] = useState<string>("");
+  const [isRecording, setIsRecording] = useState<boolean>(false);
 
   const { addNote } = useContext(NotesContext);
 
   function handleStartEditor() {
     setShouldShowOnboarding(false);
+  }
+
+  function handleStartRecording() {
+    const isSpeechRecognitionAPIAvailable =
+      "SpeechRecognition" in window || "webkitSpeechRecognition" in window;
+
+    if (!isSpeechRecognitionAPIAvailable) {
+      toast.error(
+        "Unfortunately your browser does not support speech recognition :("
+      );
+      return;
+    }
+
+    setIsRecording(true);
+    setShouldShowOnboarding(false);
+
+    const SpeechRecognitionAPI =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    speechRecognition = new SpeechRecognitionAPI();
+
+    speechRecognition.lang = navigator.language;
+    speechRecognition.continuous = true;
+    speechRecognition.maxAlternatives = 1;
+    speechRecognition.interimResults = true;
+
+    speechRecognition.onresult = (event: SpeechRecognitionEvent) => {
+      const transcript = Array.from(event.results).reduce((text, result) => {
+        return text.concat(result[0].transcript);
+      }, "");
+      setContent(transcript);
+    };
+
+    speechRecognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+      console.error(event);
+    };
+
+    speechRecognition.start();
+  }
+
+  function handleStopRecording() {
+    if (speechRecognition != null) {
+      speechRecognition.stop();
+    }
+
+    setIsRecording(false);
   }
 
   function handleContentChange(e: ChangeEvent<HTMLTextAreaElement>) {
@@ -30,6 +79,11 @@ export default function NewCard() {
   function handleSaveNote(e: FormEvent) {
     e.preventDefault();
 
+    if (content === "") {
+      toast.error("Please enter a note!");
+      return;
+    }
+
     const note = {
       id: crypto.randomUUID(),
       date: new Date(),
@@ -39,6 +93,7 @@ export default function NewCard() {
     addNote(note);
 
     setShouldShowOnboarding(true);
+    setContent("");
 
     toast.success("Note saved successfully!");
   }
@@ -63,7 +118,7 @@ export default function NewCard() {
             <X className="size-5" />
           </Close>
 
-          <form onSubmit={handleSaveNote} className="flex-1 flex flex-col">
+          <form className="flex-1 flex flex-col">
             <div className="flex flex-1 flex-col gap-3 p-5">
               <span className="text-sm font-medium text-slate-200">
                 Start Recording!
@@ -71,11 +126,16 @@ export default function NewCard() {
 
               {shouldShowOnboarding ? (
                 <p className="text-sm leading-6 text-slate-400">
-                  <button className="font-medium text-slate-100 hover:underline">
+                  <button
+                    type="button"
+                    className="font-medium text-slate-100 hover:underline"
+                    onClick={handleStartRecording}
+                  >
                     Record your voice
                   </button>
                   , or
                   <button
+                    type="button"
                     className="font-medium text-slate-100 hover:underline ml-1.5"
                     onClick={handleStartEditor}
                   >
@@ -89,17 +149,32 @@ export default function NewCard() {
                   autoFocus
                   className="text-sm leading-6 text-slate-400 bg-transparent resize-none flex-1 outline-none"
                   onChange={handleContentChange}
-                  placeholder="Type something..."
+                  value={content}
+                  placeholder={
+                    isRecording ? "Say something..." : "Type something..."
+                  }
                 />
               )}
             </div>
 
-            <button
-              type="submit"
-              className="w-full bg-slate-800 py-4 text-center text-sm font-semibold text-slate-300 outline-none transition-colors duration-200 hover:bg-green-700"
-            >
-              Save
-            </button>
+            {isRecording ? (
+              <button
+                type="button"
+                onClick={handleStopRecording}
+                className="w-full bg-slate-800 py-4 flex items-center justify-center text-center text-sm font-semibold text-slate-300 outline-none"
+              >
+                <div className="size-4 rounded-full animate-pulse bg-red-500 mr-2" />
+                <span>Recording</span>
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={handleSaveNote}
+                className="w-full bg-slate-800 py-4 text-center text-sm font-semibold text-slate-300 outline-none transition-colors duration-200 hover:bg-green-700"
+              >
+                Save
+              </button>
+            )}
           </form>
         </Content>
       </Portal>
