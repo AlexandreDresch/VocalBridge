@@ -7,9 +7,10 @@ import {
   Trigger,
 } from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
-import { ChangeEvent, FormEvent, useContext, useState } from "react";
+import { ChangeEvent, FormEvent, useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { NotesContext } from "../providers/notes-context";
+import { fetchTranslation } from "../services/translate-api";
 
 let speechRecognition: SpeechRecognition | null = null;
 
@@ -18,6 +19,19 @@ export default function NewCard() {
     useState<boolean>(true);
   const [content, setContent] = useState<string>("");
   const [isRecording, setIsRecording] = useState<boolean>(false);
+
+  useEffect(() => {
+    async function translateTest() {
+      try {
+        const data = await fetchTranslation("Hello World", "pt");
+        console.log(data);
+      } catch (error) {
+        console.error("Failed to fetch translation:", error);
+      }
+    }
+
+    translateTest();
+  }, []);
 
   const { addNote } = useContext(NotesContext);
 
@@ -100,7 +114,7 @@ export default function NewCard() {
 
   return (
     <Root>
-      <Trigger className="rounded-sm bg-slate-700 p-5 flex flex-col gap-3 text-left outline-none hover:ring-1 hover:ring-slate-600 transition-transform hover:scale-105 focus-visible:ring-1 focus-visible:ring-slate-500 focus-visible:scale-105">
+      <Trigger className="md:rounded-sm bg-slate-700 p-5 flex flex-col gap-3 text-left outline-none hover:ring-1 hover:ring-slate-600 transition-transform hover:scale-105 focus-visible:ring-1 focus-visible:ring-slate-500 focus-visible:scale-105">
         <span className="text-sm font-medium text-slate-200">
           Start Recording!
         </span>
@@ -113,7 +127,7 @@ export default function NewCard() {
 
       <Portal>
         <DialogOverlay className="inset-0 fixed bg-black/60" />
-        <Content className="z-10 overflow-hidden fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 max-w-[640px] h-[60vh] w-full bg-slate-700 rounded-sm flex flex-col outline-none">
+        <Content className="z-10 overflow-hidden inset-0 fixed md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:max-w-[640px] md:h-[60vh] w-full bg-slate-700 rounded-sm flex flex-col outline-none">
           <Close className="absolute right-0 top-0 p-1.5 text-slate-400 hover:text-slate-300">
             <X className="size-5" />
           </Close>
