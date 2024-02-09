@@ -11,6 +11,7 @@ import { X } from "lucide-react";
 import { useContext } from "react";
 import { NotesContext } from "../providers/notes-context";
 import { toast } from "sonner";
+import ContentBox from "./content-box";
 
 interface CardProps {
   note: {
@@ -43,7 +44,7 @@ export default function Card({ note }: CardProps) {
 
       <Portal>
         <DialogOverlay className="inset-0 fixed bg-black/60" />
-        <Content className="z-10 overflow-hidden fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 max-w-[640px] h-[60vh] w-full bg-slate-700 rounded-sm flex flex-col outline-none">
+        <Content className="z-10 overflow-hidden fixed inset-0 md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:max-w-[640px] md:h-[60vh] w-full bg-slate-700 rounded-sm flex flex-col outline-none">
           <Close className="absolute right-0 top-0 p-1.5 text-slate-400 hover:text-slate-300">
             <X className="size-5" />
           </Close>
@@ -53,7 +54,7 @@ export default function Card({ note }: CardProps) {
               {formatDistanceToNow(note.date, { addSuffix: true })}
             </span>
 
-            <p className="text-sm leading-6 text-slate-400">{note.content}</p>
+            <ContentBox content={note.content} />
           </div>
 
           <button
