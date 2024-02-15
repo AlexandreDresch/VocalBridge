@@ -4,21 +4,19 @@ import {
   DialogOverlay,
   Portal,
   Root,
+  Title,
   Trigger,
 } from "@radix-ui/react-dialog";
 import { formatDistanceToNow } from "date-fns";
 import { X } from "lucide-react";
 import { useContext } from "react";
-import { NotesContext } from "../providers/notes-context";
+import { Note, NotesContext } from "../providers/notes-context";
 import { toast } from "sonner";
 import ContentBox from "./content-box";
+import { getLanguageFlag, getLanguageName } from "../utils/language-functions";
 
 interface CardProps {
-  note: {
-    id: string;
-    date: Date;
-    content: string;
-  };
+  note: Note;
 }
 
 export default function Card({ note }: CardProps) {
@@ -37,7 +35,21 @@ export default function Card({ note }: CardProps) {
           {formatDistanceToNow(note.date, { addSuffix: true })}
         </span>
 
-        <p className="text-sm leading-6 text-slate-400">{note.content}</p>
+        <div className="flex flex-col">
+          <p className="font-semibold text-sm">{getLanguageFlag(note.from)}:</p>
+
+          <p className="text-sm leading-6 text-slate-400">
+            {note.originalContent}
+          </p>
+        </div>
+
+        <div className="flex flex-col">
+          <p className="font-semibold text-sm">{getLanguageFlag(note.to)}:</p>
+
+          <p className="text-sm leading-6 text-slate-400">
+            {note.translatedContent}
+          </p>
+        </div>
 
         <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-slate-900/70 to-slate-900/0 pointer-events-none" />
       </Trigger>
@@ -49,12 +61,20 @@ export default function Card({ note }: CardProps) {
             <X className="size-5" />
           </Close>
 
-          <div className="flex flex-1 flex-col gap-3 p-5">
-            <span className="text-sm font-medium text-slate-200">
-              {formatDistanceToNow(note.date, { addSuffix: true })}
-            </span>
+          <Title className="pt-5 pl-5 text-sm font-medium text-slate-200">
+            {formatDistanceToNow(note.date, { addSuffix: true })}
+          </Title>
 
-            <ContentBox content={note.content} />
+          <div className="flex flex-1 flex-col gap-3 p-5">
+            <div className="flex flex-col h-full">
+              <p className="font-semibold text-sm">{getLanguageName(note.from)}:</p>
+              <ContentBox content={note.originalContent} />
+            </div>
+
+            <div className="flex flex-col h-full">
+              <p className="font-semibold text-sm">{getLanguageName(note.to)}:</p>
+              <ContentBox content={note.translatedContent} />
+            </div>
           </div>
 
           <button
