@@ -7,33 +7,32 @@ import {
   Trigger,
 } from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
-import { ChangeEvent, FormEvent, useContext, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useContext, useState } from "react";
 import { toast } from "sonner";
 import { NotesContext } from "../providers/notes-context";
-import { fetchTranslation } from "../services/translate-api";
+import {
+  ITranslationResult,
+  fetchTranslation,
+} from "../services/translate-api";
+import ContentBox from "./content-box";
+import SelectLanguageButton from "./select-language";
 
 let speechRecognition: SpeechRecognition | null = null;
 
 export default function NewCard() {
   const [shouldShowOnboarding, setShouldShowOnboarding] =
     useState<boolean>(true);
-  const [content, setContent] = useState<string>("");
+  const [originalContent, setOriginalContent] = useState<string>("");
+  const [translatedContentData, setTranslatedContentData] =
+    useState<ITranslationResult>({
+      from: "",
+      to: "",
+      translation: "",
+    });
   const [isRecording, setIsRecording] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    async function translateTest() {
-      try {
-        const data = await fetchTranslation("Hello World", "pt");
-        console.log(data);
-      } catch (error) {
-        console.error("Failed to fetch translation:", error);
-      }
-    }
-
-    translateTest();
-  }, []);
-
-  const { addNote } = useContext(NotesContext);
+  const { addNote, language, setLanguage } = useContext(NotesContext);
 
   function handleStartEditor() {
     setShouldShowOnboarding(false);
@@ -67,7 +66,7 @@ export default function NewCard() {
       const transcript = Array.from(event.results).reduce((text, result) => {
         return text.concat(result[0].transcript);
       }, "");
-      setContent(transcript);
+      setOriginalContent(transcript);
     };
 
     speechRecognition.onerror = (event: SpeechRecognitionErrorEvent) => {
@@ -85,31 +84,61 @@ export default function NewCard() {
     setIsRecording(false);
   }
 
-  function handleContentChange(e: ChangeEvent<HTMLTextAreaElement>) {
-    setContent(e.target.value);
-    if (e.target.value === "") setShouldShowOnboarding(true);
+  function handleOriginalContentChange(e: ChangeEvent<HTMLTextAreaElement>) {
+    setOriginalContent(e.target.value);
   }
 
   function handleSaveNote(e: FormEvent) {
     e.preventDefault();
 
-    if (content === "") {
+    if (originalContent === "") {
       toast.error("Please enter a note!");
+      return;
+    }
+
+    if (translatedContentData.translation === "") {
+      toast.error("Please translate first!");
       return;
     }
 
     const note = {
       id: crypto.randomUUID(),
       date: new Date(),
-      content,
+      originalContent,
+      from: translatedContentData.from,
+      to: translatedContentData.to,
+      translatedContent: translatedContentData.translation,
     };
 
     addNote(note);
 
     setShouldShowOnboarding(true);
-    setContent("");
-
+    setOriginalContent("");
+    setLanguage("");
+    setTranslatedContentData({ from: "", to: "", translation: "" });
     toast.success("Note saved successfully!");
+  }
+
+  async function handleTranslate() {
+    if (originalContent === "") {
+      toast.error("Please enter a note to translate.");
+      return;
+    }
+
+    if (language === "") {
+      toast.error("Please select a language first.");
+      return;
+    }
+    setIsLoading(true);
+    try {
+      const data = await fetchTranslation(originalContent, language);
+      setTranslatedContentData(data);
+      setLanguage("");
+      setIsLoading(false);
+    } catch (error) {
+      toast.error("Error fetching translation, try again.");
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -120,8 +149,8 @@ export default function NewCard() {
         </span>
 
         <p className="text-sm leading-6 text-slate-400">
-          Record your voice, or type something, and we will convert it into text
-          in whatever language you want.
+          Record your voice, or type something, and then translate it into the
+          language you want.
         </p>
       </Trigger>
 
@@ -155,19 +184,37 @@ export default function NewCard() {
                   >
                     type something
                   </button>
-                  , and we will convert it into text in whatever language you
-                  want.
+                  , and then translate it into the language you want.
                 </p>
               ) : (
-                <textarea
-                  autoFocus
-                  className="text-sm leading-6 text-slate-400 bg-transparent resize-none flex-1 outline-none"
-                  onChange={handleContentChange}
-                  value={content}
-                  placeholder={
-                    isRecording ? "Say something..." : "Type something..."
-                  }
-                />
+                <>
+                  <textarea
+                    autoFocus
+                    className="text-sm leading-6 text-slate-400 bg-transparent resize-none flex-1 outline-none"
+                    onChange={handleOriginalContentChange}
+                    value={originalContent}
+                    placeholder={
+                      isRecording ? "Say something..." : "Type something..."
+                    }
+                  />
+
+                  <SelectLanguageButton
+                    isLoading={isLoading}
+                  />
+
+                  {translatedContentData.translation && (
+                    <ContentBox content={translatedContentData.translation} />
+                  )}
+
+                  <button
+                    type="button"
+                    disabled={isLoading}
+                    onClick={handleTranslate}
+                    className="w-full bg-slate-800 py-4 text-center text-sm font-semibold text-slate-300 outline-none transition-colors duration-200 hover:bg-green-700"
+                  >
+                    Translate
+                  </button>
+                </>
               )}
             </div>
 
