@@ -9,11 +9,16 @@ export default function ContentBox({ content }: ContentBoxProps) {
   function handleContentCopy() {
     navigator.clipboard.writeText(content);
 
-    toast.success("Content copied!");
+    toast.success(
+      <div className="flex gap-2">
+        <Copy size={20} />
+        <span>Content copied to clipboard!</span>
+      </div>
+    );
   }
 
   return (
-    <div className="flex flex-1 bg-slate-600 p-2 relative rounded-sm">
+    <div className="flex flex-1 hover:bg-slate-500/10 p-2 relative rounded-sm">
       <p className="text-sm leading-6 text-slate-100">{content}</p>
 
       <button
