@@ -1,9 +1,12 @@
 import { ReactNode, createContext, useEffect, useState } from "react";
 
-interface Note {
+export interface Note {
   id: string;
   date: Date;
-  content: string;
+  originalContent: string;
+  from: string;
+  to: string;
+  translatedContent: string;
 }
 
 interface NotesContext {
@@ -11,6 +14,8 @@ interface NotesContext {
   addNote: (note: Note) => void;
   removeNote: (note: Note) => void;
   handleQuery: (query: string) => void;
+  language: string;
+  setLanguage: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const NotesContext = createContext<NotesContext>({
@@ -18,12 +23,15 @@ export const NotesContext = createContext<NotesContext>({
   addNote: () => {},
   removeNote: () => {},
   handleQuery: () => {},
+  language: "",
+  setLanguage: () => {},
 });
 
 export default function NotesProvider({ children }: { children: ReactNode }) {
   const [notes, setNotes] = useState<Note[]>([]);
   const [filteredNotes, setFilteredNotes] = useState<Note[]>([]);
   const [query, setQuery] = useState<string>("");
+  const [language, setLanguage] = useState<string>("");
 
   useEffect(() => {
     setNotes(JSON.parse(localStorage.getItem("@vocal-bridge/notes") || "[]"));
@@ -36,7 +44,8 @@ export default function NotesProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (query) {
       const filtered = notes.filter((note) =>
-        note.content.toLowerCase().includes(query.toLowerCase())
+        note.originalContent.toLowerCase().includes(query.toLowerCase()) || 
+        note.translatedContent.toLowerCase().includes(query.toLowerCase())
       );
       setFilteredNotes(filtered);
     } else {
@@ -62,7 +71,9 @@ export default function NotesProvider({ children }: { children: ReactNode }) {
         notes: filteredNotes,
         addNote,
         removeNote,
-        handleQuery
+        handleQuery,
+        language,
+        setLanguage,
       }}
     >
       {children}
