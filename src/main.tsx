@@ -10,6 +10,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <NotesProvider>
       <App />
     </NotesProvider>
-    <Toaster richColors />
+    <Toaster richColors position="top-right"/>
   </React.StrictMode>
 );
