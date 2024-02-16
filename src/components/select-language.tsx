@@ -16,35 +16,39 @@ export default function SelectLanguageButton({
   return (
     <Select.Root value={language} onValueChange={setLanguage}>
       <Select.Trigger
-        className="bg-slate-800 p-3 flex gap-2 items-center justify-center relative disabled:cursor-wait disabled:bg-slate-800/50"
+        className="bg-transparent border border-tertiary p-3 flex gap-2 items-center justify-center relative disabled:cursor-wait disabled:bg-tertiary/50"
         disabled={isLoading}
       >
-        <Select.Icon>
-          {getLanguageFlag(language)}
-          {language.length === 0 && "Select a language"}
-        </Select.Icon>
+        <Select.Icon>{getLanguageFlag(language)}</Select.Icon>
 
-        <Select.Value aria-label={language}>
+        <Select.Value aria-label={language} placeholder="Select a language">
           {getLanguageName(language)}
         </Select.Value>
       </Select.Trigger>
 
       <Select.Portal>
-        <Select.Content className="z-20 bg-slate-500 rounded-sm overflow-hidden inset-0 fixed md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 outline-none">
+        <Select.Content className="z-20 bg-primary rounded-sm overflow-hidden inset-0 fixed md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 outline-none">
           <Select.ScrollUpButton />
-          <Select.Viewport className="flex flex-col gap-1">
-            {languages.map((language) => (
-              <Select.Item
-                value={language.slug}
-                key={language.slug}
-                className="hover:bg-slate-400 text-sm w-full text-center"
-              >
-                <Select.ItemText>
-                  {language.flag} {language.name} - {language.nativeName}
-                </Select.ItemText>
-                <Select.ItemIndicator />
-              </Select.Item>
-            ))}
+          <Select.Viewport className="flex flex-col items-center justify-center gap-1 p-3">
+            <Select.Group>
+              <Select.Label className="text-center text-lg my-2 font-medium text-secondary tracking-wide">
+                LANGUAGES
+              </Select.Label>
+
+              {languages.map((language) => (
+                <Select.Item
+                  value={language.slug}
+                  key={language.slug}
+                  className="hover:bg-tertiary hover:cursor-pointer text-sm w-full text-center outline-none"
+                >
+                  <Select.ItemText>
+                    {language.flag} {language.name} - {language.nativeName}
+                  </Select.ItemText>
+                  <Select.ItemIndicator />
+                </Select.Item>
+              ))}
+            </Select.Group>
+
             <Select.Separator />
           </Select.Viewport>
           <Select.ScrollDownButton />
