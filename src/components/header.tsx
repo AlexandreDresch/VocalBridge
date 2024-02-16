@@ -1,8 +1,9 @@
 import { ChangeEvent, useContext } from "react";
 import logo from "../assets/bridge.svg";
 import { NotesContext } from "../providers/notes-context";
+import { Search } from "lucide-react";
 
-export default function Header() {  
+export default function Header() {
   const { handleQuery } = useContext(NotesContext);
 
   function handleSearch(e: ChangeEvent<HTMLInputElement>) {
@@ -12,24 +13,20 @@ export default function Header() {
   }
 
   return (
-    <header className="w-full space-y-5">
-      <div className="flex  items-center">
-        <h1 className="font-semibold text-xl text-slate-700 align-bottom">
-          Vocal
-        </h1>
-        <img src={logo} alt="Bridge" className="w-10" />
+    <header className="w-full space-y-5 flex justify-between items-center">
+      <div className="flex justify-center items-center">
+        <img src={logo} alt="Vocal Bridge" className="w-14" />
       </div>
 
-      <form className="w-full">
+      <form className="w-1/2 relative flex items-center">
+        <Search className="absolute top-2 left-1 md:top-1.5 size-5 md:size-6"  />
         <input
           type="text"
-          placeholder="Search in your notes..."
+          placeholder="Search..."
           onChange={handleSearch}
-          className="w-full bg-transparent text-3xl font-medium tracking-tight placeholder:text-slate-500 outline-none"
+          className="w-full bg-tertiary p-1 pl-7 md:pl-8 rounded-xl text-lg md:text-xl font-medium tracking-tight placeholder:text-slate-400  outline-none"
         />
       </form>
-
-      <div className="w-full h-px  bg-gradient-to-r from bg-slate-500 via-slate-600 to-slate-700" />
     </header>
   );
 }
