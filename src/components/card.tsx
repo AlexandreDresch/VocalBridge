@@ -30,7 +30,7 @@ export default function Card({ note }: CardProps) {
 
   return (
     <Root>
-      <Trigger className="rounded-sm flex flex-col text-left bg-slate-700 p-5 space-y-3 overflow-hidden relative outline-none hover:ring-1 hover:ring-slate-600 transition-transform hover:scale-105 focus-visible:ring-1 focus-visible:ring-slate-500 focus-visible:scale-105">
+      <Trigger className="rounded-sm flex flex-col text-left bg-primary p-5 space-y-3 overflow-hidden relative outline-none hover:ring-1 hover:ring-slate-600 transition-transform hover:scale-105 focus-visible:ring-1 focus-visible:ring-slate-500 focus-visible:scale-105">
         <span className="text-sm font-medium text-slate-200">
           {formatDistanceToNow(note.date, { addSuffix: true })}
         </span>
@@ -51,7 +51,6 @@ export default function Card({ note }: CardProps) {
           </p>
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-slate-900/70 to-slate-900/0 pointer-events-none" />
       </Trigger>
 
       <Portal>
