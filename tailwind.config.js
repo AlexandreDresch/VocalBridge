@@ -9,6 +9,17 @@ export default {
       fontFamily: {
         sans: ["'Fira Code'", "sans-serif"],
       },
+      colors: {
+        primary: {
+          DEFAULT: "#303951",
+        },
+        secondary: {
+          DEFAULT: "#E25319",
+        },
+        tertiary: {
+          DEFAULT: "#596175",
+        },
+      },
     },
   },
   plugins: [],
