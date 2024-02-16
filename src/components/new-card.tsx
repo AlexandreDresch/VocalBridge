@@ -6,7 +6,7 @@ import {
   Root,
   Trigger,
 } from "@radix-ui/react-dialog";
-import { X } from "lucide-react";
+import { ChevronLeft, Languages, Save, X } from "lucide-react";
 import { ChangeEvent, FormEvent, useContext, useState } from "react";
 import { toast } from "sonner";
 import { NotesContext } from "../providers/notes-context";
@@ -36,6 +36,11 @@ export default function NewCard() {
 
   function handleStartEditor() {
     setShouldShowOnboarding(false);
+  }
+
+  function handleStopEditor() {
+    setShouldShowOnboarding(true);
+    setIsRecording(false);
   }
 
   function handleStartRecording() {
@@ -143,9 +148,9 @@ export default function NewCard() {
 
   return (
     <Root>
-      <Trigger className="md:rounded-sm bg-slate-700 p-5 flex flex-col gap-3 text-left outline-none hover:ring-1 hover:ring-slate-600 transition-transform hover:scale-105 focus-visible:ring-1 focus-visible:ring-slate-500 focus-visible:scale-105">
+      <Trigger className="md:rounded-sm bg-primary p-5 flex flex-col gap-3 text-left outline-none hover:ring-1 hover:ring-slate-600 transition-transform hover:scale-105 focus-visible:ring-1 focus-visible:ring-slate-500 focus-visible:scale-105">
         <span className="text-sm font-medium text-slate-200">
-          Start Recording!
+          Start Translating!
         </span>
 
         <p className="text-sm leading-6 text-slate-400">
@@ -156,15 +161,25 @@ export default function NewCard() {
 
       <Portal>
         <DialogOverlay className="inset-0 fixed bg-black/60" />
-        <Content className="z-10 overflow-hidden inset-0 fixed md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:max-w-[640px] md:h-[60vh] w-full bg-slate-700 rounded-sm flex flex-col outline-none">
+        <Content className="z-10 overflow-hidden inset-0 fixed md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:max-w-[640px] md:h-[60vh] w-full bg-primary rounded-sm flex flex-col outline-none">
           <Close className="absolute right-0 top-0 p-1.5 text-slate-400 hover:text-slate-300">
             <X className="size-5" />
           </Close>
 
+          {!shouldShowOnboarding && (
+            <button
+              type="button"
+              className="absolute top-1.5 right-8 text-secondary/70 hover:text-secondary"
+              onClick={handleStopEditor}
+            >
+              <ChevronLeft className="size-5" />
+            </button>
+          )}
+
           <form className="flex-1 flex flex-col">
             <div className="flex flex-1 flex-col gap-3 p-5">
               <span className="text-sm font-medium text-slate-200">
-                Start Recording!
+                Start Translating!
               </span>
 
               {shouldShowOnboarding ? (
@@ -198,9 +213,7 @@ export default function NewCard() {
                     }
                   />
 
-                  <SelectLanguageButton
-                    isLoading={isLoading}
-                  />
+                  <SelectLanguageButton isLoading={isLoading} />
 
                   {translatedContentData.translation && (
                     <ContentBox content={translatedContentData.translation} />
@@ -210,9 +223,10 @@ export default function NewCard() {
                     type="button"
                     disabled={isLoading}
                     onClick={handleTranslate}
-                    className="w-full bg-slate-800 py-4 text-center text-sm font-semibold text-slate-300 outline-none transition-colors duration-200 hover:bg-green-700"
+                    className="w-full bg-white flex gap-2 py-4 items-center justify-center text-sm font-bold text-secondary outline-none transition-colors duration-200"
                   >
-                    Translate
+                    <Languages strokeWidth={2} size={20} />{" "}
+                    <span>Translate</span>
                   </button>
                 </>
               )}
@@ -227,15 +241,16 @@ export default function NewCard() {
                 <div className="size-4 rounded-full animate-pulse bg-red-500 mr-2" />
                 <span>Recording</span>
               </button>
-            ) : (
+            ) : translatedContentData.translation.length > 0 ? (
               <button
                 type="button"
                 onClick={handleSaveNote}
-                className="w-full bg-slate-800 py-4 text-center text-sm font-semibold text-slate-300 outline-none transition-colors duration-200 hover:bg-green-700"
+                className="w-full flex items-center gap-2 justify-center bg-transparent py-4 text-center text-sm font-semibold text-slate-300 outline-none transition-colors duration-200 hover:bg-slate-800"
               >
-                Save
+                <Save strokeWidth={1} className="text-secondary" />{" "}
+                <span>Save</span>
               </button>
-            )}
+            ): null}
           </form>
         </Content>
       </Portal>
