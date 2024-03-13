@@ -14,17 +14,17 @@ export default function Header() {
 
   return (
     <header className="w-full space-y-5 flex justify-between items-center">
-      <div className="flex justify-center items-center">
+      <a className="flex justify-center items-center" href="/">
         <img src={logo} alt="Vocal Bridge" className="w-14" />
-      </div>
+      </a>
 
       <form className="w-1/2 relative flex items-center">
-        <Search className="absolute top-2 left-1 md:top-1.5 size-5 md:size-6"  />
+        <Search className="absolute top-3 left-2 size-5"  />
         <input
           type="text"
           placeholder="Search..."
           onChange={handleSearch}
-          className="w-full bg-tertiary p-1 pl-7 md:pl-8 rounded-xl text-lg md:text-xl font-medium tracking-tight placeholder:text-slate-400  outline-none"
+          className="w-full bg-tertiary p-2 pl-8 md:pl-9 rounded-xl text-lg  font-medium tracking-tight placeholder:text-slate-400  outline-none"
         />
       </form>
     </header>
