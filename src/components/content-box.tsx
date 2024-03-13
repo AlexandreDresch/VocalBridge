@@ -18,15 +18,15 @@ export default function ContentBox({ content }: ContentBoxProps) {
   }
 
   return (
-    <div className="flex flex-1 hover:bg-slate-500/10 p-2 relative rounded-sm">
+    <div className="flex flex-1 hover:bg-slate-500/10 p-2 relative border border-tertiary rounded-sm transition-colors">
       <p className="text-sm leading-6 text-slate-100">{content}</p>
 
       <button
         type="button"
         onClick={handleContentCopy}
-        className="absolute right-2 text-slate-100"
+        className="absolute right-2 text-slate-100 hover:text-secondary transition-colors"
       >
-        <Copy size={20} />
+        <Copy size={20}/>
       </button>
     </div>
   );
