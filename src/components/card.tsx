@@ -8,12 +8,13 @@ import {
   Trigger,
 } from "@radix-ui/react-dialog";
 import { formatDistanceToNow } from "date-fns";
-import { X } from "lucide-react";
+import { ChevronRightIcon, X } from "lucide-react";
 import { useContext } from "react";
 import { Note, NotesContext } from "../providers/notes-context";
 import { toast } from "sonner";
 import ContentBox from "./content-box";
 import { getLanguageFlag, getLanguageName } from "../utils/language-functions";
+import Separator from "./separator";
 
 interface CardProps {
   note: Note;
@@ -35,27 +36,46 @@ export default function Card({ note }: CardProps) {
           {formatDistanceToNow(note.date, { addSuffix: true })}
         </span>
 
-        <div className="flex flex-col">
-          <p className="font-semibold text-sm">{getLanguageFlag(note.from)}:</p>
+        <div className="flex flex-col w-full">
+          <div className="flex w-full justify-around items-center">
+            <div className="flex gap-2">
+              <p className="font-semibold text-sm">
+                {getLanguageFlag(note.from)}
+              </p>
+              <p className="font-semibold text-sm">
+                {getLanguageName(note.from).toUpperCase()}
+              </p>
+            </div>
 
+            <ChevronRightIcon size={20} />
+
+            <div className="flex gap-2">
+              <p className="font-semibold text-sm">
+                {getLanguageName(note.to).toUpperCase()}
+              </p>
+              <p className="font-semibold text-sm">
+                {getLanguageFlag(note.to)}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-3 w-full">
           <p className="text-sm leading-6 text-slate-400">
             {note.originalContent}
           </p>
-        </div>
 
-        <div className="flex flex-col">
-          <p className="font-semibold text-sm">{getLanguageFlag(note.to)}:</p>
+          <Separator orientation="horizontal" />
 
           <p className="text-sm leading-6 text-slate-400">
             {note.translatedContent}
           </p>
         </div>
-
       </Trigger>
 
       <Portal>
         <DialogOverlay className="inset-0 fixed bg-black/60" />
-        <Content className="z-10 overflow-hidden fixed inset-0 md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:max-w-[640px] md:h-[60vh] w-full bg-slate-700 rounded-sm flex flex-col outline-none">
+        <Content className="z-10 overflow-hidden fixed inset-0 md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:max-w-[640px] md:h-[60vh] w-full bg-primary rounded-sm flex flex-col outline-none">
           <Close className="absolute right-0 top-0 p-1.5 text-slate-400 hover:text-slate-300">
             <X className="size-5" />
           </Close>
@@ -65,13 +85,27 @@ export default function Card({ note }: CardProps) {
           </Title>
 
           <div className="flex flex-1 flex-col gap-3 p-5">
-            <div className="flex flex-col h-full">
-              <p className="font-semibold text-sm">{getLanguageName(note.from)}:</p>
+            <div className="flex flex-col h-full gap-1">
+              <div className="flex gap-2">
+                <p className="font-semibold text-sm">
+                  {getLanguageFlag(note.from)}
+                </p>
+                <p className="font-semibold text-sm">
+                  {getLanguageName(note.from).toUpperCase()}:
+                </p>
+              </div>
               <ContentBox content={note.originalContent} />
             </div>
 
-            <div className="flex flex-col h-full">
-              <p className="font-semibold text-sm">{getLanguageName(note.to)}:</p>
+            <div className="flex flex-col h-full gap-1">
+              <div className="flex gap-2">
+                <p className="font-semibold text-sm">
+                  {getLanguageFlag(note.to)}
+                </p>
+                <p className="font-semibold text-sm">
+                  {getLanguageName(note.to).toUpperCase()}:
+                </p>
+              </div>
               <ContentBox content={note.translatedContent} />
             </div>
           </div>
@@ -79,7 +113,7 @@ export default function Card({ note }: CardProps) {
           <button
             type="button"
             onClick={handleNoteDelete}
-            className="w-full bg-slate-800 py-4 text-center text-sm font-semibold text-slate-300 outline-none transition-colors duration-200 hover:bg-red-800"
+            className="w-full bg-secondary py-4 text-center text-sm font-semibold text-slate-100 outline-none transition-colors duration-200 "
           >
             Delete
           </button>
