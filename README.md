@@ -1,30 +1,39 @@
-# React + TypeScript + Vite
+<h1 align="center">
+  Vocal Bridge
+</h1>
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![cover](.github/image.png?style=flat)
 
-Currently, two official plugins are available:
+### Vocal Bridge is a versatile application that allows users to translate their speech or text, and save their notes effortlessly. Whether you need to quickly translate a conversation or jot down important thoughts, Vocal Bridge has you covered.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- **Speech Translation**: Vocal Bridge enables users to translate spoken language into written text.
+- **Text Translation**: Users can input written text and translate it into their desired language, facilitating efficient communication.
+- **Note Saving**: Vocal Bridge provides a convenient way to save translated text as notes, allowing users to organize and access their important information easily.
+- **Multilingual Support**: With support for multiple languages, Vocal Bridge caters to diverse linguistic needs, ensuring effective communication regardless of language barriers.
+- **User-Friendly Interface**: The intuitive interface of Vocal Bridge ensures a smooth user experience, making it accessible to users of all skill levels.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### Click [here](https://vocal-bridge.vercel.app) to access the project.
 
-- Configure the top-level `parserOptions` property like this:
+## Starting the project
+Use **npm install** to install project dependencies.
+<br />
+Populate `.env` file based on `.env.EXAMPLE`.  `VITE_API_KEY` is your microsoft translator api key.
+<br />
+Then start the project.
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+```cl
+npm run dev
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## Technologies
+
+-   [ ] React.Js using Vite
+-   [ ] Typescript
+-   [ ] TailwindCSS
+-   [ ] Axios
+-   [ ] Date-fns
+-   [ ] Sonner
+
+<br />
