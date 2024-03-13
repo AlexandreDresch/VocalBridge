@@ -1,5 +1,5 @@
 import * as Select from "@radix-ui/react-select";
-import { languages } from "../utils/languages";
+import { languages } from "../constants/languages";
 import { getLanguageFlag, getLanguageName } from "../utils/language-functions";
 import { useContext } from "react";
 import { NotesContext } from "../providers/notes-context";
