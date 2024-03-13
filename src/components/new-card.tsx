@@ -6,7 +6,7 @@ import {
   Root,
   Trigger,
 } from "@radix-ui/react-dialog";
-import { ChevronLeft, Languages, Save, X } from "lucide-react";
+import { ChevronLeft, Languages, MicIcon, Save, X } from "lucide-react";
 import { ChangeEvent, FormEvent, useContext, useState } from "react";
 import { toast } from "sonner";
 import { NotesContext } from "../providers/notes-context";
@@ -16,6 +16,7 @@ import {
 } from "../services/translate-api";
 import ContentBox from "./content-box";
 import SelectLanguageButton from "./select-language";
+import Loading from "./loading";
 
 let speechRecognition: SpeechRecognition | null = null;
 
@@ -134,6 +135,8 @@ export default function NewCard() {
       toast.error("Please select a language first.");
       return;
     }
+
+    setIsRecording(false);
     setIsLoading(true);
     try {
       const data = await fetchTranslation(originalContent, language);
@@ -213,44 +216,49 @@ export default function NewCard() {
                     }
                   />
 
+                  {isRecording && (
+                    <button
+                      type="button"
+                      onClick={handleStopRecording}
+                      className="w-full py-4 flex items-center justify-center text-center text-sm font-semibold text-slate-300 outline-none"
+                    >
+                      <MicIcon className="size-10 rounded-full animate-pulse text-red-500 mr-2" />
+                    </button>
+                  )}
+
                   <SelectLanguageButton isLoading={isLoading} />
 
                   {translatedContentData.translation && (
                     <ContentBox content={translatedContentData.translation} />
                   )}
-
-                  <button
-                    type="button"
-                    disabled={isLoading}
-                    onClick={handleTranslate}
-                    className="w-full bg-white flex gap-2 py-4 items-center justify-center text-sm font-bold text-secondary outline-none transition-colors duration-200"
-                  >
-                    <Languages strokeWidth={2} size={20} />{" "}
-                    <span>Translate</span>
-                  </button>
                 </>
               )}
             </div>
-
-            {isRecording ? (
-              <button
-                type="button"
-                onClick={handleStopRecording}
-                className="w-full bg-slate-800 py-4 flex items-center justify-center text-center text-sm font-semibold text-slate-300 outline-none"
-              >
-                <div className="size-4 rounded-full animate-pulse bg-red-500 mr-2" />
-                <span>Recording</span>
-              </button>
-            ) : translatedContentData.translation.length > 0 ? (
+            <button
+              type="button"
+              disabled={isLoading}
+              onClick={handleTranslate}
+              className="w-full bg-white flex gap-2 py-4 items-center justify-center text-sm font-bold text-secondary outline-none transition-colors duration-200"
+            >
+              {isLoading ? (
+                <Loading />
+              ) : (
+                <>
+                  <Languages strokeWidth={2} size={20} />
+                  <span>Translate</span>
+                </>
+              )}
+            </button>
+            {translatedContentData.translation.length > 0 && (
               <button
                 type="button"
                 onClick={handleSaveNote}
-                className="w-full flex items-center gap-2 justify-center bg-transparent py-4 text-center text-sm font-semibold text-slate-300 outline-none transition-colors duration-200 hover:bg-slate-800"
+                className="w-full flex items-center gap-2 justify-center bg-transparent py-4 text-center text-sm font-semibold text-slate-300 outline-none"
               >
-                <Save strokeWidth={1} className="text-secondary" />{" "}
+                <Save strokeWidth={1} className="text-secondary" />
                 <span>Save</span>
               </button>
-            ): null}
+            )}
           </form>
         </Content>
       </Portal>
