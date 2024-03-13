@@ -1,4 +1,5 @@
 import { ReactNode, createContext, useEffect, useState } from "react";
+import { debounce } from "../utils";
 
 export interface Note {
   id: string;
@@ -61,9 +62,9 @@ export default function NotesProvider({ children }: { children: ReactNode }) {
     setNotes((prev) => prev.filter((n) => n.id !== note.id));
   }
 
-  function handleQuery(query: string) {
+  const debouncedHandleQuery = debounce((query: string) => {
     setQuery(query);
-  }
+  }, 300); 
 
   return (
     <NotesContext.Provider
@@ -71,7 +72,7 @@ export default function NotesProvider({ children }: { children: ReactNode }) {
         notes: filteredNotes,
         addNote,
         removeNote,
-        handleQuery,
+        handleQuery: debouncedHandleQuery,
         language,
         setLanguage,
       }}
